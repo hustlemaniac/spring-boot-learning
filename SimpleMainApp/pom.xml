@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>info.ejava.examples.app</groupId>
+    <artifactId>java-app-example</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <!--    add packaging-->
+    <packaging>jar</packaging>
+    <!-- appears in maven build not required-->
+    <name>App::Build::Java Main Example</name>
+
+    <!--    add properties-->
+    <properties>
+        <java.target.version>11</java.target.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
+        <maven-antrun-plugin>3.1.0</maven-antrun-plugin>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+    <!--    add build tag-->
+    <!--    add plugins-->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <release>${java.target.version}</release>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven-jar-plugin.version}</version>
+                    <!--                    need to mainclass for maven jar plugin-->
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <classpathPrefix>lib/</classpathPrefix>
+                                <mainClass>info.ejava.examples.app.build.javamain.SimpleMainApp</mainClass>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>execute-jar</id>
+                            <phase>integration-test</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <tasks>
+                                    <java fork="true" classname= "info.ejava.examples.app.build.javamain.SimpleMainApp">
+                                        <classpath>
+                                            <pathelement path= "${project.build.directory}/${project.build.finalName}.jar"/>
+                                        </classpath>
+                                        <arg value="Ant-supplied java -cp"/>
+                                        <arg value="Command Line"/>
+                                        <arg value="args"/>
+                                    </java>
+                                    <java fork="true"
+                                          jar= "${project.build.directory}/${project.build.finalName}.jar">
+                                        <arg value="Ant-supplied java -jar"/>
+                                        <arg value="Command Line"/>
+                                        <arg value="args"/>
+                                    </java>
+                                </tasks>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
